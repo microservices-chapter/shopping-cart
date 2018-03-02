@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: shopping-cart
+  cloud:
+    config:
+      uri: http://config-server:8888
+      fail-fast: true
+      password: foo
+      username: user
+#
+# For local debugging use
+#
+#server:
+#  port: 8084
