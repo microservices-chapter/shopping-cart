@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" monitorInterval="30">
+  <!--TODO: to yaml; and move to config repo-->
+  <Properties>
+    <Property name="logPattern">
+      %d{yyyy-MM-dd HH:mm:ss.SSS} Shopping Cart %5p [%X{CORRELATION-ID}] %-30.30c{1.} : %m%n%ex
+    </Property>
+    <Property name="logPath">
+      logs
+    </Property>
+  </Properties>
+  <Appenders>
+    <Console name="ConsoleAppender" target="SYSTEM_OUT" follow="true">
+      <PatternLayout pattern="${logPattern}"/>
+    </Console>
+    <RollingFile name="FileAppender" fileName="${logPath}/shopping-cart.log" filePattern="${logPath}/shopping-cart-%d{yyyy-MM-dd}-%i.log">
+      <PatternLayout>
+        <Pattern>${logPattern}</Pattern>
+      </PatternLayout>
+      <Policies>
+        <SizeBasedTriggeringPolicy size="10MB" />
+      </Policies>
+      <DefaultRolloverStrategy max="10"/>
+    </RollingFile>
+  </Appenders>
+  <Loggers>
+    <Logger name="com.appian.microservices.shoppingcart" level="debug" additivity="false">
+      <AppenderRef ref="ConsoleAppender" />
+      <AppenderRef ref="FileAppender"/>
+    </Logger>
+    <Root level="info">
+      <AppenderRef ref="ConsoleAppender" />
+    </Root>
+  </Loggers>
+</Configuration>
