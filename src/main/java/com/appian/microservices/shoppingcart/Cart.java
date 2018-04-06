@@ -23,6 +23,7 @@ public class Cart {
   }
 
   public List getItems() {
+    LOG.info("Retrieving items for " + userId + "'s cart");
     return this.items;
   }
 

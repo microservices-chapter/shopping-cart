@@ -21,16 +21,13 @@ public class CorrelationIdFilter extends HandlerInterceptorAdapter {
 
   @Override
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object object) {
-    String correlationId = "";
+    String correlationId = UUID.randomUUID().toString();
     if(request.getHeader(CORRELATION_ID) != null) {
-      correlationId = request.getHeader(correlationId);
-      logger.info("Found correlation id " + correlationId);
+      correlationId = request.getHeader(CORRELATION_ID);
+      logger.debug("Found correlation id " + correlationId);
     } else {
-      correlationId = UUID.randomUUID().toString();
-      response.addHeader(CORRELATION_ID, correlationId);
-      logger.info("No correlation id found. Added header with correlation id: " + correlationId);
+      logger.debug("No correlation id found. Creating correlation id " + correlationId);
     }
-
     ThreadContext.put(CORRELATION_ID, correlationId);
     return true;
   }
