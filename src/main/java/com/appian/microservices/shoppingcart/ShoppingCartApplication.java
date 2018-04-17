@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
+import feign.Feign;
+
 /**
  * Shopping cart application.
  *
@@ -25,12 +28,16 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
  */
 @SpringBootApplication
 @RestController
+@EnableFeignClients
 public class ShoppingCartApplication extends WebMvcConfigurerAdapter {
 
+  // TODO: Feign https://cloud.spring.io/spring-cloud-netflix/multi/multi_spring-cloud-feign.html
+  // Interface says I am going against Aravinds API
   @Autowired
   private CorrelationIdFilter correlationIdFilter;
 
   private static final Logger LOG = LoggerFactory.getLogger(ShoppingCartApplication.class);
+  private static OrderClient orderClient;
 
   private List<Cart> carts;
   public ShoppingCartApplication() {
@@ -46,6 +53,7 @@ public class ShoppingCartApplication extends WebMvcConfigurerAdapter {
   @PostMapping(value = "/{userId}/add")
   public ResponseEntity<Void> add(@PathVariable String userId, @RequestBody Item input) {
     Item item = new Item(input.getUuid(), input.getQuantity());
+    // TODO: Check that there is enough of the item to add to the cart
     getCartByUserId(userId).addItem(item);
     return ResponseEntity.ok().build();
   }
@@ -61,6 +69,10 @@ public class ShoppingCartApplication extends WebMvcConfigurerAdapter {
     interceptorRegistry.addInterceptor(correlationIdFilter);
   }
 
+  @RequestMapping(value = "order")
+  public String placeOrder() {
+    return orderClient.list();
+  }
   // Functions to add
   // Update Quantity
   //
@@ -70,6 +82,8 @@ public class ShoppingCartApplication extends WebMvcConfigurerAdapter {
   }
 
   public static void main(String[] args) {
+    orderClient = Feign.builder()
+        .target(OrderClient.class, "http://localhost:8080/order");
     ApplicationContext applicationContext = SpringApplication.run(ShoppingCartApplication.class, args);
   }
 }
