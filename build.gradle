@@ -7,15 +7,20 @@ buildscript {
   }
   dependencies {
     classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.6.RELEASE")
+    classpath "io.spring.gradle:dependency-management-plugin:1.0.3.RELEASE"
   }
 }
 
 apply plugin: 'java'
 apply plugin: 'org.springframework.boot'
+apply plugin: "io.spring.dependency-management"
 
 dependencyManagement {
   imports {
     mavenBom 'org.springframework.cloud:spring-cloud-dependencies:Camden.RELEASE'
+    mavenBom 'org.springframework.cloud:spring-cloud-openfeign:2.0.0.M2'
+  }
+  dependencies {
   }
 }
 
@@ -37,10 +42,12 @@ dependencies {
   compile ('org.springframework.cloud:spring-cloud-starter-config') {
     exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
   }
-  compile ('org.springframework.cloud:spring-cloud-starter-openfeign:2.0.0.M2') {
+  compile ('org.springframework.cloud:spring-cloud-starter-openfeign') {
     exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
   }
   compile 'org.springframework.boot:spring-boot-starter-log4j2'
+  compile 'com.google.code.gson:gson'
+  compile group: 'io.github.openfeign', name: 'feign-gson', version: '9.4.0'
 
   testCompile group: 'junit', name: 'junit', version: '4.12'
 }
