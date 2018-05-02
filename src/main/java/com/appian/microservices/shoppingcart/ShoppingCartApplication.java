@@ -92,7 +92,7 @@ public class ShoppingCartApplication extends WebMvcConfigurerAdapter {
         .contract(new SpringMvcContract())
         .encoder(new GsonEncoder())
         .decoder(new GsonDecoder())
-        .target(OrderClient.class, "http://localhost:8099");
+        .target(OrderClient.class, "http://localhost:8080/order");
     ApplicationContext applicationContext = SpringApplication.run(ShoppingCartApplication.class, args);
   }
 }
