@@ -38,6 +38,10 @@ public class Cart {
     this.items.remove(itemToRemove);
   }
 
+  public void emptyCart() {
+    this.items.clear();
+  }
+
   public String getUserId() { return this.userId; }
 
 }
